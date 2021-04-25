@@ -1,16 +1,28 @@
 //
 
+import 'package:covid_app/settings/Services/Services.dart';
+import 'package:covid_app/settings/Services/model/cases.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Stats extends StatefulWidget {
-  var notificationsEnabled = false;
-
   @override
   _StatsState createState() => _StatsState();
 }
 
 class _StatsState extends State<Stats> {
+  List<Cases> _data;
+
+  @override
+  void initState() {
+    super.initState();
+    Services.getCases('poland').then((cases) {
+      setState(() {
+        _data = cases;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -30,6 +42,15 @@ class _StatsState extends State<Stats> {
                           TextStyle(fontSize: 30, color: CupertinoColors.black),
                     ),
                     Spacer(),
+                    CupertinoButton(
+                        child: Icon(CupertinoIcons.arrow_2_circlepath),
+                        onPressed: () {
+                          Services.getCases('poland').then((cases) {
+                            setState(() {
+                              _data = cases;
+                            });
+                          });
+                        }),
                     CupertinoButton(
                         child: Icon(CupertinoIcons.settings),
                         onPressed: () {
@@ -59,40 +80,30 @@ class _StatsState extends State<Stats> {
                 Text('Notifications'),
               ],
             ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: null == _data ? 0 : _data.length,
+              itemBuilder: (context, index) {
+                Cases values = _data.reversed.toList()[index];
+                var date = values.date.toString();
+                date = date.substring(0, 10);
+                return Card(
+                  child: Column(
+                    children: [
+                      Text("Confirmed: ${values.confirmed.toString()}"),
+                      Text("Deaths: ${values.deaths.toString()}"),
+                      Text("Recovered: ${values.recovered.toString()}"),
+                      Text("Active: ${values.active.toString()}"),
+                      Text("Date: $date"),
+                    ],
+                  ),
+                );
+              },
+            ),
           )
         ],
       ),
     );
   }
 }
-
-// class Stats extends StatefulWidget {
-//   @override
-//   _StatsState createState() => _StatsState();
-// }
-
-// class _StatsState extends State<Stats> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Co-track'),
-//         actions: [
-//           IconButton(
-//               icon: Icon(Icons.settings),
-//               onPressed: () {
-//                 Navigator.pushNamed(context, '/settings');
-//               })
-//         ],
-//       ),
-//       body: Column(
-//         children: [
-//           Text('Stats for country_name'),
-//           Text('New cases: '),
-//           Text('New deaths: '),
-//           Text('Recoveries')
-//         ],
-//       ),
-//     );
-//   }
-// }

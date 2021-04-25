@@ -1,6 +1,9 @@
 //
 
+import 'package:covid_app/settings/Services/Services.dart';
+import 'package:covid_app/settings/Services/model/country.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget {
   var notificationsEnabled = false;
@@ -9,6 +12,46 @@ class Settings extends StatefulWidget {
 }
 
 class _SettingsState extends State<Settings> {
+  List<CountryData> _countries;
+  var selectedValue;
+
+  showPicker() {
+    _countries.sort((a, b) => a.country.compareTo(b.country));
+    showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 300,
+            width: 1000,
+            child: CupertinoPicker(
+                magnification: 1.25,
+                backgroundColor: Colors.white,
+                onSelectedItemChanged: (value) {
+                  setState(() {
+                    selectedValue = _countries[value].slug;
+                  });
+                },
+                itemExtent: 32.0,
+                children: new List<Widget>.generate(_countries.length, (index) {
+                  return new Center(
+                    child: Text(
+                        "${_countries[index].iso2}, ${_countries[index].country}"),
+                  );
+                })),
+          );
+        });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Services.getCountires().then((countries) {
+      setState(() {
+        _countries = countries;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -45,8 +88,10 @@ class _SettingsState extends State<Settings> {
                 Text('Country stats'),
                 Spacer(),
                 CupertinoButton(
-                  child: Text('PL 🇵🇱️'),
-                  onPressed: () {},
+                  child: Text("$selectedValue"),
+                  onPressed: () {
+                    showPicker();
+                  },
                 )
               ],
             ),

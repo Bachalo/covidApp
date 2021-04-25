@@ -42,6 +42,14 @@ fake_async
 2.12
 file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0/
 file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0/lib/
+http
+2.12
+file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.13.1/
+file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.13.1/lib/
+http_parser
+2.12
+file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.0/
+file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.0/lib/
 intl
 2.12
 file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/intl-0.17.0/
@@ -62,6 +70,10 @@ path
 2.12
 file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.8.0/
 file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/path-1.8.0/lib/
+pedantic
+2.12
+file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.0/
+file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.0/lib/
 source_span
 2.12
 file:///home/micheal/snap/flutter/common/flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.8.0/
