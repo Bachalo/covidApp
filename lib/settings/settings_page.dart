@@ -1,6 +1,7 @@
 //
 
 import 'package:covid_app/settings/Services/Services.dart';
+import 'package:covid_app/settings/Services/model/SharedPreferences.dart';
 import 'package:covid_app/settings/Services/model/country.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,8 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   List<CountryData> _countries;
-  var selectedValue;
+  var _selectedValue;
+  var _selectedSlug;
 
   showPicker() {
     _countries.sort((a, b) => a.country.compareTo(b.country));
@@ -28,7 +30,7 @@ class _SettingsState extends State<Settings> {
                 backgroundColor: Colors.white,
                 onSelectedItemChanged: (value) {
                   setState(() {
-                    selectedValue = _countries[value].slug;
+                    _selectedValue = SP().setCurSlug(_countries[value].slug);
                   });
                 },
                 itemExtent: 32.0,
@@ -48,6 +50,16 @@ class _SettingsState extends State<Settings> {
     Services.getCountires().then((countries) {
       setState(() {
         _countries = countries;
+      });
+    });
+    SP().getCurrentSlug().then((value) {
+      setState(() {
+        _selectedSlug = value;
+      });
+    });
+    SP().getAllowsNotifications().then((value) {
+      setState(() {
+        _selectedValue = value;
       });
     });
   }
@@ -88,7 +100,7 @@ class _SettingsState extends State<Settings> {
                 Text('Country stats'),
                 Spacer(),
                 CupertinoButton(
-                  child: Text("$selectedValue"),
+                  child: Text(_selectedSlug ?? "poland"),
                   onPressed: () {
                     showPicker();
                   },
