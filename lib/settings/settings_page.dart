@@ -1,21 +1,20 @@
 //
 
 import 'package:covid_app/settings/Services/Services.dart';
-import 'package:covid_app/settings/Services/model/SharedPreferences.dart';
 import 'package:covid_app/settings/Services/model/country.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'Services/model/SharedPreferences.dart';
 
 class Settings extends StatefulWidget {
-  var notificationsEnabled = false;
   @override
   _SettingsState createState() => _SettingsState();
 }
 
 class _SettingsState extends State<Settings> {
   List<CountryData> _countries;
-  var _selectedValue;
-  var _selectedSlug;
+  String _selectedSlug;
+  bool _notificationsEnabled = true;
 
   showPicker() {
     _countries.sort((a, b) => a.country.compareTo(b.country));
@@ -29,8 +28,12 @@ class _SettingsState extends State<Settings> {
                 magnification: 1.25,
                 backgroundColor: Colors.white,
                 onSelectedItemChanged: (value) {
-                  setState(() {
-                    _selectedValue = SP().setCurSlug(_countries[value].slug);
+                  SharedPrefsSettings()
+                      .setCurSlug(_countries[value].slug)
+                      .then((value) {
+                    setState(() {
+                      _selectedSlug = value;
+                    });
                   });
                 },
                 itemExtent: 32.0,
@@ -52,14 +55,14 @@ class _SettingsState extends State<Settings> {
         _countries = countries;
       });
     });
-    SP().getCurrentSlug().then((value) {
+    SharedPrefsSettings().getBoolFromSharedPref().then((value) {
       setState(() {
-        _selectedSlug = value;
+        _notificationsEnabled = value;
       });
     });
-    SP().getAllowsNotifications().then((value) {
+    SharedPrefsSettings().getCurrentSlug().then((value) {
       setState(() {
-        _selectedValue = value;
+        _selectedSlug = value;
       });
     });
   }
@@ -116,10 +119,16 @@ class _SettingsState extends State<Settings> {
                 Text('Notifications'),
                 Spacer(),
                 CupertinoSwitch(
-                    value: widget.notificationsEnabled,
+                    value: _notificationsEnabled,
                     onChanged: (bool newValue) {
                       setState(() {
-                        widget.notificationsEnabled = newValue;
+                        SharedPrefsSettings()
+                            .setBoolFromSharedPref(newValue)
+                            .then((value) {
+                          setState(() {
+                            _notificationsEnabled = value;
+                          });
+                        });
                       });
                     })
               ],

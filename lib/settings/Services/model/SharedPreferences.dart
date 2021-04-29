@@ -3,45 +3,58 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 final String _curSlug = "chosenSlug";
-final String _kNotificationsPrefs = "allowNotifications";
 
-/// -----------------------------------------
-/// Method that return country slug that user wants to track
-/// -----------------------------------------
-class SP {
+class SharedPrefsSettings {
+//
+
+  /// -----------------------------------------
+  /// Method that returns what country user wants track
+  /// -----------------------------------------
   Future<String> getCurrentSlug() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
 
-    return prefs.getString(_curSlug) ?? "poland";
+    final stringReturned = prefs.getString(_curSlug);
+    if (stringReturned == null) {
+      return "poland";
+    }
+    return stringReturned;
   }
 
   /// -----------------------------------------
   /// Method that returns if user wants to receive notifications
   /// -----------------------------------------
 
-  Future<bool> getAllowsNotifications() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<bool> getBoolFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
 
-    return prefs.getBool(_kNotificationsPrefs) ?? true;
+    final boolReturned = prefs.getBool("notifications");
+    if (boolReturned == null) {
+      return true;
+    }
+    return boolReturned;
   }
 
   /// -----------------------------------------
   /// Method that saves what country user wants to track
   /// -----------------------------------------
 
-  Future<bool> setAllowsNotifications(bool value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<bool> setBoolFromSharedPref(value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-    return prefs.setBool(_kNotificationsPrefs, value);
+    await prefs.setBool("notifications", value);
+    bool newValue = await getBoolFromSharedPref();
+    return newValue;
   }
 
   /// -----------------------------------------
   /// Method that saves if user wants to receive notifications
   /// -----------------------------------------
 
-  Future<bool> setCurSlug(String value) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
+  Future<String> setCurSlug(String value) async {
+    final prefs = await SharedPreferences.getInstance();
 
-    return prefs.setString(_curSlug, value);
+    await prefs.setString(_curSlug, value);
+    String newValue = await getCurrentSlug();
+    return newValue;
   }
 }

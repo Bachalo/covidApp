@@ -17,8 +17,11 @@
  Done with basic request to api.
  Set upped graph for up to 50k active cases.
  Made it refreshable.
- !!! Have to figure out shared preferences.
 
+ ### DONE
+ [!!! Have to figure out shared preferences.]
+
+ ### TO DO
  Need to do new cases, deaths, recoveries and maybe new vacinations.
 
  Desing a better app bar mb sliver one.
