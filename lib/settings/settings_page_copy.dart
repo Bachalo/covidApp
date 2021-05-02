@@ -1,11 +1,10 @@
 //
 
 import 'package:covid_app/settings/Services/Services.dart';
-import 'package:covid_app/settings/Services/model/SharedPreferences.dart';
 import 'package:covid_app/settings/Services/model/country.dart';
-import 'package:covid_app/static/palette.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'Services/model/SharedPreferences.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -71,27 +70,39 @@ class _SettingsState extends State<Settings> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        backgroundColor: Palette.primaryColor,
-        child: NestedScrollView(
-          // Sliver App bar part
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              CupertinoSliverNavigationBar(
-                // Disables annoying back arrow PogU
-                automaticallyImplyLeading: false,
-                backgroundColor: Colors.black.withOpacity(0.4),
-                largeTitle:
-                    Text('Settings', style: TextStyle(color: Colors.white)),
-              )
-            ];
-          },
-
-          // Page body part
-
-          body: Column(children: [
-            Container(
-              color: CupertinoColors.systemGrey6,
-              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+      navigationBar: CupertinoNavigationBar(
+        padding: EdgeInsetsDirectional.only(top: 10),
+        border: null,
+        leading: Text(
+          'Settings',
+          style: TextStyle(fontSize: 30, color: CupertinoColors.black),
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            height: 150,
+            child: Align(
+              alignment: Alignment.center,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'Settings',
+                      style:
+                          TextStyle(fontSize: 30, color: CupertinoColors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            color: CupertinoColors.systemGrey6,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
                 Text('Country stats'),
                 Spacer(),
                 CupertinoButton(
@@ -100,32 +111,34 @@ class _SettingsState extends State<Settings> {
                     showPicker();
                   },
                 )
-              ]),
+              ],
             ),
-            Container(
-              color: CupertinoColors.systemGrey6,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text('Notifications'),
-                  Spacer(),
-                  CupertinoSwitch(
-                      value: _notificationsEnabled,
-                      onChanged: (bool newValue) {
-                        setState(() {
-                          SharedPrefsSettings()
-                              .setBoolFromSharedPref(newValue)
-                              .then((value) {
-                            setState(() {
-                              _notificationsEnabled = value;
-                            });
+          ),
+          Container(
+            color: CupertinoColors.systemGrey6,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text('Notifications'),
+                Spacer(),
+                CupertinoSwitch(
+                    value: _notificationsEnabled,
+                    onChanged: (bool newValue) {
+                      setState(() {
+                        SharedPrefsSettings()
+                            .setBoolFromSharedPref(newValue)
+                            .then((value) {
+                          setState(() {
+                            _notificationsEnabled = value;
                           });
                         });
-                      })
-                ],
-              ),
-            )
-          ]),
-        ));
+                      });
+                    })
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

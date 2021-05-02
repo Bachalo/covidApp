@@ -17,7 +17,8 @@ class SharedPrefsSettings {
     if (stringReturned == null) {
       return "poland";
     }
-    return stringReturned;
+    return stringReturned.replaceFirst(
+        stringReturned[0], stringReturned[0].toUpperCase());
   }
 
   /// -----------------------------------------

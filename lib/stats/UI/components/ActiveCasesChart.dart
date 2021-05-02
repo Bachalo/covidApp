@@ -38,15 +38,7 @@ class _MyWeeklyActiveChartState extends State<MyWeeklyActiveChart> {
                   show: true, border: Border.all(color: Colors.grey[700])),
               lineBarsData: [
                 LineChartBarData(
-                    spots: [
-                      FlSpot(1, widget.data[0]),
-                      FlSpot(2, widget.data[1]),
-                      FlSpot(3, widget.data[2]),
-                      FlSpot(4, widget.data[3]),
-                      FlSpot(5, widget.data[4]),
-                      FlSpot(6, widget.data[5]),
-                      FlSpot(7, widget.data[6]),
-                    ],
+                    spots: checkForNull(widget.data),
                     isCurved: true,
                     // dotData: FlDotData(show: false),
                     colors: widget.gradientColors,
@@ -62,5 +54,29 @@ class _MyWeeklyActiveChartState extends State<MyWeeklyActiveChart> {
         ),
       ),
     );
+  }
+}
+
+checkForNull(List<double> data) {
+  if (data == null) {
+    return [
+      FlSpot(1, 0.1),
+      FlSpot(2, 0.1),
+      FlSpot(3, 0.1),
+      FlSpot(4, 0.1),
+      FlSpot(5, 0.1),
+      FlSpot(6, 0.1),
+      FlSpot(7, 0.1)
+    ];
+  } else {
+    return [
+      FlSpot(1, data[0]),
+      FlSpot(2, data[1]),
+      FlSpot(3, data[2]),
+      FlSpot(4, data[3]),
+      FlSpot(5, data[4]),
+      FlSpot(6, data[5]),
+      FlSpot(7, data[6]),
+    ];
   }
 }

@@ -4,10 +4,9 @@ import 'package:covid_app/settings/Services/Services.dart';
 import 'package:covid_app/settings/Services/model/cases.dart';
 import 'package:covid_app/static/palette.dart';
 import 'package:covid_app/stats/UI/components/ActiveCasesChart.dart';
-import 'package:covid_app/stats/UI/components/gradientIcon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import '../../settings/Services/model/SharedPreferences.dart';
 
 class Stats extends StatefulWidget {
@@ -18,26 +17,13 @@ class Stats extends StatefulWidget {
 }
 
 class _StatsState extends State<Stats> {
-  String country = "poland";
-  List<Cases> _data;
-  List<double> _dataD;
-  int newCases = 595;
-  final Shader myGradient =
-      LinearGradient(colors: <Color>[Palette.blueColor, Palette.greenierColor])
-          .createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
-
-  @override
-  void initState() {
-    super.initState();
-    SharedPrefsSettings().getCurrentSlug().then((value) {
-      setState(() {
-        country = value;
-      });
+  Future _getData() async {
+    await SharedPrefsSettings().getCurrentSlug().then((value) {
+      country = value;
     });
-    Services.getCases(country).then((cases) {
+    await Services.getCases(country).then((cases) {
       setState(() {
         _data = cases;
-        // Trash code needs clening up
         _dataD = [
           iTD(
             _data[_data.length - 7].active,
@@ -61,189 +47,157 @@ class _StatsState extends State<Stats> {
             _data[_data.length - 1].active,
           ),
         ];
-        newCases =
-            _data[_data.length - 1].active - _data[_data.length - 2].active;
+        newCases = _data[_data.length - 2].confirmed -
+            _data[_data.length - 3].confirmed;
+        newRecoveries = _data[_data.length - 2].recovered -
+            _data[_data.length - 3].recovered;
       });
     });
   }
 
+  String country = "poland";
+  List<Cases> _data;
+  List<double> _dataD;
+  int newCases = null;
+  int newRecoveries = null;
+  final Shader myGradient =
+      LinearGradient(colors: <Color>[Palette.blueColor, Palette.greenierColor])
+          .createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPrefsSettings().getCurrentSlug().then((value) {
+      setState(() {
+        country = value;
+      });
+    });
+    _getData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    //
-    // Size of The screen for scalling purposeos
-    var screenSize = MediaQuery.of(context).size;
-    //
+    //var screenSize = MediaQuery.of(context).size;
     return CupertinoPageScaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Palette.primaryColor,
-      child: Column(
-        children: [
-          Container(
-            height: 150,
-            child: Align(
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Covid Stats',
-                      style: TextStyle(
-                          fontSize: 30,
-                          foreground: Paint()
-                            ..shader = myGradient /*color: Palette.blueColor*/),
-                    ),
-                    Text(
-                      "for $country",
-                      style: TextStyle(color: Palette.greenierColor),
-                    ),
-                    Spacer(),
-                    //
-                    // Update Button
-                    CupertinoButton(
-                        child: GradientIcon(
-                            CupertinoIcons.arrow_2_circlepath,
-                            25.0,
-                            LinearGradient(
-                                colors: widget.gradients,
-                                begin: Alignment.bottomLeft,
-                                end: Alignment
-                                    .topRight)) /*Icon(CupertinoIcons.arrow_2_circlepath)*/,
-                        onPressed: () async {
-                          await SharedPrefsSettings()
-                              .getCurrentSlug()
-                              .then((value) {
-                            country = value;
-                          });
-                          Services.getCases(country).then((cases) {
-                            setState(() {
-                              _data = cases;
-                              _dataD = [
-                                iTD(
-                                  _data[_data.length - 7].active,
-                                ),
-                                iTD(
-                                  _data[_data.length - 6].active,
-                                ),
-                                iTD(
-                                  _data[_data.length - 5].active,
-                                ),
-                                iTD(
-                                  _data[_data.length - 4].active,
-                                ),
-                                iTD(
-                                  _data[_data.length - 3].active,
-                                ),
-                                iTD(
-                                  _data[_data.length - 2].active,
-                                ),
-                                iTD(
-                                  _data[_data.length - 1].active,
-                                ),
-                              ];
-                            });
-                          });
-                        }),
-
-                    // Settings butt
-                    CupertinoButton(
-                        child: GradientIcon(
-                            CupertinoIcons.settings,
-                            25.0,
-                            LinearGradient(
-                                colors: widget.gradients,
-                                begin: Alignment.bottomLeft,
-                                end: Alignment.topRight)),
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/settings');
-                        }),
-                  ],
-                ),
+      child: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return <Widget>[
+            CupertinoSliverNavigationBar(
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.black.withOpacity(0.4),
+              largeTitle: Text(
+                "Covid stats for $country",
+                style: TextStyle(
+                    foreground: Paint()
+                      ..shader = myGradient /*color: Palette.blueColor*/),
               ),
             ),
-          ),
-          Container(
-            height: 150,
-            width: 150,
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
-                colors: [Colors.green, Colors.blue, Colors.orange, Colors.pink],
-                stops: [0.2, 0.5, 0.7, 1],
-                center: Alignment(0.1, 0.3),
-                focal: Alignment(-0.1, 0.6),
-                focalRadius: 0.9,
-              ),
+          ];
+        },
+        body: Column(
+          children: [
+            SizedBox(
+              height: 20,
             ),
-            child: Center(
-              child: Text(
-                newCases.toString(),
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-          Divider(),
-          Container(
-            color: CupertinoColors.systemGrey6,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+            // Zakażenia and wyzdrowienia widget
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Active cases in $country in last 7 days'),
-              ],
-            ),
-          ),
-          SizedBox(
-              height: 300,
-              width: 400,
-              child: MyWeeklyActiveChart(widget.gradients, _dataD)),
-          // SizedBox(
-          //     height: 300, width: 500, child: TimeSeriesBar.withSampleData()),
-          Divider(),
-          Container(
-            color: CupertinoColors.systemGrey6,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text('Notifications'),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: null == _data ? 0 : _data.length,
-              itemBuilder: (context, index) {
-                Cases values = _data.reversed.toList()[index];
-                var date = values.date.toString();
-                date = date.substring(0, 10);
-                return Card(
-                  color: Palette.primaryColor,
-                  child: Column(
-                    children: [
-                      Text(
-                        "Confirmed: ${values.confirmed.toString()}",
-                        style: TextStyle(color: Palette.accentColor),
-                      ),
-                      Text(
-                        "Deaths: ${values.deaths.toString()}",
-                        style: TextStyle(color: Palette.accentColor),
-                      ),
-                      Text(
-                        "Recovered: ${values.recovered.toString()}",
-                        style: TextStyle(color: Palette.accentColor),
-                      ),
-                      Text(
-                        "Active: ${values.active.toString()}",
-                        style: TextStyle(color: Palette.accentColor),
-                      ),
-                      Text(
-                        "Date: $date",
-                        style: TextStyle(color: Palette.accentColor),
-                      ),
-                    ],
+                Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(35),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xffa71d31), Color(0xff3f0d12)],
+                      )),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Zakażenia",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        check(
+                          newCases,
+                          null,
+                          new SpinKitFadingCircle(
+                            color: Colors.white,
+                            size: 45,
+                          ),
+                          Text(newCases.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: scaleFontSize(newCases),
+                              )),
+                        )
+                      ],
+                    ),
                   ),
-                );
-              },
+                ),
+                Container(
+                  height: 150,
+                  width: 150,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(35),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xff0bab64), Color(0xff3bb78f)],
+                      )),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Wyzdrowienia",
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        ),
+                        check(
+                          newCases,
+                          null,
+                          new SpinKitFadingCircle(
+                            color: Colors.white,
+                            size: 45,
+                          ),
+                          Text(newRecoveries.toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: scaleFontSize(newRecoveries),
+                              )),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
-          )
-        ],
+            Divider(),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: widget.gradients),
+                borderRadius: BorderRadius.circular(30),
+                color: CupertinoColors.systemGrey6,
+              ),
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 30.0),
+                  child: Text('Aktywne przypadki w $country',
+                      style: TextStyle(color: Colors.black, fontSize: 20))),
+            ),
+            SizedBox(
+                height: 300,
+                width: 400,
+                child: MyWeeklyActiveChart(widget.gradients, _dataD)),
+          ],
+        ),
       ),
     );
   }
@@ -256,4 +210,24 @@ iTD(int number) {
   string = start + "." + end;
   var doublee = double.parse(string);
   return doublee;
+}
+
+scaleFontSize(int number) {
+  var length = number.toString().length;
+  print(length);
+  if (length < 4) {
+    var size = 270 / (length * 4);
+    return size;
+  } else {
+    var size = 210 / length;
+    return size;
+  }
+}
+
+check(value, value2, Widget widget1, Widget widget2) {
+  if (value == value2) {
+    return widget1;
+  } else {
+    return widget2;
+  }
 }

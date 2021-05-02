@@ -19,7 +19,12 @@
  Made it refreshable.
 
  ### DONE
- [!!! Have to figure out shared preferences.]
+ [!!! 
+ Have to figure out shared preferences.
+ Loading animations
+ Make bottom navigation bar for graphs, settings, alarm page(one with alarm number and what do to).
+
+ ]
 
  ### TO DO
  Need to do new cases, deaths, recoveries and maybe new vacinations.
@@ -30,10 +35,9 @@
 
  Mb get themes going. (Do light mode and dark mode)
 
- Get some loading screen and loading animations.
+ Get some loading screen.
 
  Figure out how to do notifications.
 
-Make bottom navigation bar for graphs, settings, alarm page(one with alarm number and what do to).
-
+ !!!Fix not showing cupertinoPicker in apk realease.
 
