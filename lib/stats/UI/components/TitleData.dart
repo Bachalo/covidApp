@@ -40,17 +40,59 @@ class LineTitles {
             fontWeight: FontWeight.bold,
             fontSize: 12),
         getTitles: (value) {
-          switch (value.toInt()) {
-            case 1:
-              return '10k';
-            case 2:
-              return '20k';
-            case 3:
-              return '30k';
-            case 4:
-              return '40k';
-            case 5:
-              return '50k';
+          var lenght = value.toString().length;
+          if (lenght <= 5) {
+            switch (value.toInt()) {
+              case 1:
+                return '10k';
+              case 2:
+                return '20k';
+              case 3:
+                return '30k';
+              case 4:
+                return '40k';
+              case 5:
+                return '50k';
+            }
+          } else if (lenght <= 6) {
+            switch (value.toInt()) {
+              case 1:
+                return '100k';
+              case 2:
+                return '200k';
+              case 3:
+                return '300k';
+              case 4:
+                return '400k';
+              case 5:
+                return '500k';
+            }
+          } else if (lenght <= 4) {
+            switch (value.toInt()) {
+              case 1:
+                return '1k';
+              case 2:
+                return '2k';
+              case 3:
+                return '3k';
+              case 4:
+                return '4k';
+              case 5:
+                return '5k';
+            }
+          } else if (lenght <= 6) {
+            switch (value.toInt()) {
+              case 1:
+                return '1 mil';
+              case 2:
+                return '2 mil';
+              case 3:
+                return '3 mil';
+              case 4:
+                return '4 mil';
+              case 5:
+                return '5 mil';
+            }
           }
         },
       ));

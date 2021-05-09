@@ -2,8 +2,9 @@
 
 import 'package:covid_app/settings/Services/Services.dart';
 import 'package:covid_app/settings/Services/model/cases.dart';
-import 'package:covid_app/static/palette.dart';
+import 'package:covid_app/theme/palette.dart';
 import 'package:covid_app/stats/UI/components/ActiveCasesChart.dart';
+import 'package:covid_app/theme/fonts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -97,107 +98,123 @@ class _StatsState extends State<Stats> {
             ),
           ];
         },
-        body: Column(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            // Zakażenia and wyzdrowienia widget
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        body: Flex(direction: Axis.vertical, children: [
+          ClipRect(
+            child: Column(
               children: [
-                Container(
-                  height: 150,
-                  width: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(35),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xffa71d31), Color(0xff3f0d12)],
-                      )),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Zakażenia",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+                SizedBox(
+                  height: 20,
+                ),
+                // Zakażenia and wyzdrowienia widget
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xffa71d31), Color(0xff3f0d12)],
+                          )),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Zakażenia",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: Fonts.sf_regular),
+                            ),
+                            check(
+                              newCases,
+                              null,
+                              new SpinKitFadingCircle(
+                                color: Colors.white,
+                                size: 45,
+                              ),
+                              Text(newCases.toString(),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: scaleFontSize(newCases),
+                                      fontFamily: Fonts.sf_regular)),
+                            )
+                          ],
                         ),
-                        check(
-                          newCases,
-                          null,
-                          new SpinKitFadingCircle(
-                            color: Colors.white,
-                            size: 45,
-                          ),
-                          Text(newCases.toString(),
+                      ),
+                    ),
+                    Container(
+                      height: 150,
+                      width: 150,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(35),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Color(0xff0bab64), Color(0xff3bb78f)],
+                          )),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              "Wyzdrowienia",
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: scaleFontSize(newCases),
-                              )),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 150,
-                  width: 150,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(35),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [Color(0xff0bab64), Color(0xff3bb78f)],
-                      )),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "Wyzdrowienia",
-                          style: TextStyle(color: Colors.white, fontSize: 20),
-                        ),
-                        check(
-                          newCases,
-                          null,
-                          new SpinKitFadingCircle(
-                            color: Colors.white,
-                            size: 45,
-                          ),
-                          Text(newRecoveries.toString(),
-                              style: TextStyle(
+                                fontSize: 20,
+                              ),
+                            ),
+                            check(
+                              newCases,
+                              null,
+                              new SpinKitFadingCircle(
                                 color: Colors.white,
-                                fontSize: scaleFontSize(newRecoveries),
-                              )),
-                        )
-                      ],
+                                size: 45,
+                              ),
+                              Text(newRecoveries.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: scaleFontSize(newRecoveries),
+                                  )),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
+                Divider(),
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(colors: widget.gradients),
+                    borderRadius: BorderRadius.circular(30),
+                    color: CupertinoColors.systemGrey6,
+                  ),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 30.0),
+                      child: Text(
+                        'Aktywne przypadki w $country',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontFamily: Fonts.sf_regular,
+                        ),
+                      )),
+                ),
+                SizedBox(
+                    height: 300,
+                    width: 400,
+                    child: MyWeeklyActiveChart(widget.gradients, _dataD)),
               ],
             ),
-            Divider(),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: widget.gradients),
-                borderRadius: BorderRadius.circular(30),
-                color: CupertinoColors.systemGrey6,
-              ),
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 15.0, horizontal: 30.0),
-                  child: Text('Aktywne przypadki w $country',
-                      style: TextStyle(color: Colors.black, fontSize: 20))),
-            ),
-            SizedBox(
-                height: 300,
-                width: 400,
-                child: MyWeeklyActiveChart(widget.gradients, _dataD)),
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }

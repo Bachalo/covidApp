@@ -3,7 +3,8 @@
 import 'package:covid_app/settings/Services/Services.dart';
 import 'package:covid_app/settings/Services/model/SharedPreferences.dart';
 import 'package:covid_app/settings/Services/model/country.dart';
-import 'package:covid_app/static/palette.dart';
+import 'package:covid_app/theme/palette.dart';
+import 'package:covid_app/theme/fonts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -40,9 +41,11 @@ class _SettingsState extends State<Settings> {
                 itemExtent: 32.0,
                 children: new List<Widget>.generate(_countries.length, (index) {
                   return new Center(
-                    child: Text(
-                        "${_countries[index].iso2}, ${_countries[index].country}"),
-                  );
+                      child: Text(
+                          "${_countries[index].iso2}, ${_countries[index].country}",
+                          style: TextStyle(
+                            fontFamily: Fonts.sf_regular,
+                          )));
                 })),
           );
         });
@@ -92,10 +95,16 @@ class _SettingsState extends State<Settings> {
             Container(
               color: CupertinoColors.systemGrey6,
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                Text('Country stats'),
+                Text('Country stats',
+                    style: TextStyle(
+                      fontFamily: Fonts.sf_regular,
+                    )),
                 Spacer(),
                 CupertinoButton(
-                  child: Text(_selectedSlug ?? "poland"),
+                  child: Text(_selectedSlug ?? "poland",
+                      style: TextStyle(
+                        fontFamily: Fonts.sf_regular,
+                      )),
                   onPressed: () {
                     showPicker();
                   },
@@ -107,7 +116,10 @@ class _SettingsState extends State<Settings> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text('Notifications'),
+                  Text('Notifications',
+                      style: TextStyle(
+                        fontFamily: Fonts.sf_regular,
+                      )),
                   Spacer(),
                   CupertinoSwitch(
                       value: _notificationsEnabled,

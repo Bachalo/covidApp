@@ -1,6 +1,6 @@
 //
 
-import 'package:covid_app/static/palette.dart';
+import 'package:covid_app/theme/palette.dart';
 import 'package:covid_app/stats/UI/components/TitleData.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
